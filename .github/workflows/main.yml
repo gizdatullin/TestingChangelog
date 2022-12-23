@@ -28,13 +28,6 @@ jobs:
         with:
           github_token: ${{ github.token }}
 
-      - name: Check latest release version
-        id: check_version
-        run: ./.github/scripts/check_version.sh
-        env:
-          latest_version: ${{steps.fetch_latest_release.outputs.tag_name}}
-          current_version: ${{inputs.version}}
-
       - name: Build changelog
         id: github_release
         uses: mikepenz/release-changelog-builder-action@v3
