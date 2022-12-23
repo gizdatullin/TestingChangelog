@@ -1,0 +1,55 @@
+name: Main Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version'
+        required: true 
+        type: string
+      create_release:
+        description: 'Release or not release'
+        required: true 
+        type: boolean
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Get latest release
+        id: fetch_latest_release
+        uses: thebritican/fetch-latest-release@v2.0.0
+        with:
+          github_token: ${{ github.token }}
+
+      - name: Check latest release version
+        id: check_version
+        run: ./.github/scripts/check_version.sh
+        env:
+          latest_version: ${{steps.fetch_latest_release.outputs.tag_name}}
+          current_version: ${{inputs.version}}
+
+      - name: Build changelog
+        id: github_release
+        uses: mikepenz/release-changelog-builder-action@v3
+        if: ${{ inputs.create_release }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Create github release
+        uses: mikepenz/action-gh-release@v0.2.0-a03
+        if: ${{ steps.check_version.outputs.IS_NEW_VERSION == 'true' }}
+        with:
+          body: ${{steps.github_release.outputs.changelog}}
+          tag_name: v-${{inputs.version}}          
+          
+      - name: Dump steps context
+        env:
+          STEPS_CONTEXT: ${{ toJson(steps) }}
+        run: echo "$STEPS_CONTEXT"
