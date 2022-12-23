@@ -5,7 +5,7 @@ on:
     inputs:
       version:
         description: 'Version'
-        default: 1.0.0-${{github.run_number}}
+        default: 1.0.0
         type: string
       create_release:
         description: 'Release or not release'
