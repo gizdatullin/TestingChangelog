@@ -5,7 +5,7 @@ on:
     inputs:
       version:
         description: 'Version'
-        default: 1.0.1
+        default: v1.0.2
         type: string
       create_release:
         description: 'Release or not release'
@@ -33,13 +33,13 @@ jobs:
         uses: mikepenz/release-changelog-builder-action@v3
         env:
           GITHUB_TOKEN: ${{ github.token }}
-          toTag: 'v-${{inputs.version}}'
+          fromTag: 'v-1.0.0'
 
       - name: Create github release
         uses: mikepenz/action-gh-release@v0.2.0-a03
         with:
           body: ${{steps.github_release.outputs.changelog}}
-          tag_name: v-${{inputs.version}}          
+          tag_name: ${{inputs.version}}          
           
       - name: Dump steps context
         env:
