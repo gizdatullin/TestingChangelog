@@ -33,6 +33,7 @@ jobs:
         uses: mikepenz/release-changelog-builder-action@v3
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          toTag: ${{ github.sha }}
           fromTag: 'v-1.0.0'
 
       - name: Create github release
