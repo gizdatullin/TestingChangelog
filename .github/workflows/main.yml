@@ -5,7 +5,7 @@ on:
     inputs:
       version:
         description: 'Version'
-        default: 1.0.0
+        default: 1.0.1
         type: string
       create_release:
         description: 'Release or not release'
@@ -31,13 +31,11 @@ jobs:
       - name: Build changelog
         id: github_release
         uses: mikepenz/release-changelog-builder-action@v3
-        if: ${{ inputs.create_release }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
       - name: Create github release
         uses: mikepenz/action-gh-release@v0.2.0-a03
-        if: ${{ steps.check_version.outputs.IS_NEW_VERSION == 'true' }}
         with:
           body: ${{steps.github_release.outputs.changelog}}
           tag_name: v-${{inputs.version}}          
