@@ -27,13 +27,15 @@ jobs:
         uses: thebritican/fetch-latest-release@v2.0.0
         with:
           github_token: ${{ github.token }}
-
+          
+      - name: test
+        run: git tag ${{ github.event.inputs.version }}
+  
       - name: Build changelog
         id: github_release
         uses: mikepenz/release-changelog-builder-action@v3
         env:
           GITHUB_TOKEN: ${{ github.token }}
-          toTag: ${{ github.sha }}
           fromTag: 'v-1.0.0'
 
       - name: Create github release
